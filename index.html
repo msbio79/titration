@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>고등학교 화학 - 중화적정 가상 실험실</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Google Fonts: Inter & Outfit for premium look -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="dark-mode">
+  <div class="app-container" id="appContainer">
+    
+    <!-- LEFT SIDEBAR: Settings and Controls -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="theme-toggle-container">
+          <button id="themeToggleBtn" aria-label="테마 전환" class="icon-btn">
+            <!-- Sun Icon (Light Mode Active -> Shows Moon) -->
+            <svg id="sunIcon" class="svg-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+            </svg>
+            <svg id="moonIcon" class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+            </svg>
+          </button>
+        </div>
+        <h1 class="brand-title">중화적정 실험실</h1>
+        <button id="sidebarCollapseBtn" aria-label="메뉴 접기" class="icon-btn">
+          <!-- Fold Icon -->
+          <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="11 17 6 12 11 7"></polyline>
+            <line x1="18" y1="19" x2="18" y2="5"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="sidebar-scroll-content">
+        <!-- Section 1: 실험 설정 (Setup) -->
+        <section class="menu-section card setup-card">
+          <h2 class="section-title">🧪 실험 기본 설정</h2>
+          
+          <div class="form-group">
+            <label for="titrationDirection">실험 유형</label>
+            <select id="titrationDirection">
+              <option value="acid_to_base">염기를 산으로 적정 (뷰렛: 산 / 플라스크: 염기)</option>
+              <option value="base_to_acid">산을 염기로 적정 (뷰렛: 염기 / 플라스크: 산)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="standardSolution" id="standardSolLabel">표준 용액 (뷰렛액)</label>
+            <select id="standardSolution">
+              <!-- Dynamically populated based on titrationDirection -->
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="standardConc">표준 용액 농도 (M)</label>
+            <div class="range-container">
+              <input type="range" id="standardConc" min="0.05" max="0.30" step="0.01" value="0.10">
+              <span class="range-val" id="standardConcVal">0.10 M</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="unknownSolution" id="unknownSolLabel">미지 용액 (플라스크액)</label>
+            <select id="unknownSolution">
+              <!-- Dynamically populated based on titrationDirection -->
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="unknownVolume">미지 용액 부피 (mL)</label>
+            <div class="range-container">
+              <input type="range" id="unknownVolume" min="10" max="30" step="5" value="20">
+              <span class="range-val" id="unknownVolumeVal">20 mL</span>
+            </div>
+          </div>
+
+
+        </section>
+
+        <!-- Section 3: 시뮬레이션 제어 (Sidebar control) -->
+        <section class="menu-section card control-card">
+          <h2 class="section-title">⚡ 시뮬레이션 제어</h2>
+          
+          <div class="form-group">
+            <label for="dropSpeed">용액 주입 속도</label>
+            <div class="range-container">
+              <input type="range" id="dropSpeed" min="0" max="3" step="1" value="2">
+              <span class="range-val" id="dropSpeedVal" style="min-width: 140px;">보통 (2.0 mL/초)</span>
+            </div>
+          </div>
+
+          <div class="control-btn-grid">
+            <button id="prevBtn" class="control-btn" title="이전 단계 (0.1 mL 되돌리기)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="19 20 9 12 19 4 19 20"></polygon>
+                <line x1="5" y1="19" x2="5" y2="5"></line>
+              </svg>
+              이전
+            </button>
+            <button id="playBtn" class="control-btn play-active" title="주입 시작/정지">
+              <!-- Play State Icon -->
+              <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor" class="btn-icon">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+              <!-- Pause State Icon -->
+              <svg id="pauseIcon" viewBox="0 0 24 24" fill="currentColor" class="btn-icon hidden">
+                <rect x="6" y="4" width="4" height="16"></rect>
+                <rect x="14" y="4" width="4" height="16"></rect>
+              </svg>
+              재생
+            </button>
+            <button id="nextBtn" class="control-btn" title="다음 단계 (1방울 주입)">
+              다음
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="5 4 15 12 5 20 5 4"></polygon>
+                <line x1="19" y1="5" x2="19" y2="19"></line>
+              </svg>
+            </button>
+          </div>
+          
+          <button id="moveToEqBtn" class="accent-btn flex-center" style="margin-bottom: 8px; width: 100%;">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+              <polyline points="17 6 23 6 23 12"></polyline>
+            </svg>
+            중화점으로 바로 이동
+          </button>
+          
+          <button id="resetBtn" class="secondary-btn flex-center">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+              <polyline points="3 3 3 8 8 8"></polyline>
+            </svg>
+            처음으로 (실험 초기화)
+          </button>
+        </section>
+
+        <!-- Section 2: 지시약 설정 -->
+        <section class="menu-section card indicator-card">
+          <h2 class="section-title">🎨 지시약 선택</h2>
+          <div class="indicator-grid">
+            <button class="indicator-btn active" data-indicator="btb">
+              <span class="ind-color-dot btb-dot"></span>
+              BTB 용액
+            </button>
+            <button class="indicator-btn" data-indicator="pp">
+              <span class="ind-color-dot pp-dot"></span>
+              페놀프탈레인
+            </button>
+            <button class="indicator-btn" data-indicator="mo">
+              <span class="ind-color-dot mo-dot"></span>
+              메틸오렌지
+            </button>
+          </div>
+        </section>
+
+        <!-- Section 4: 화학 반응 정보 (Reaction Info) -->
+        <section class="menu-section card reaction-card">
+          <h2 class="section-title">📝 화학 반응 정보</h2>
+          <div class="reaction-info-container">
+            <div class="equation-row">
+              <span class="eq-label">분자 반응식:</span>
+              <div class="eq-val" id="molecularEq">HCl + NaOH → NaCl + H₂O</div>
+            </div>
+            <div class="equation-row" style="margin-top: 8px;">
+              <span class="eq-label">알짜 이온 반응식:</span>
+              <div class="eq-val" id="netIonicEq">H⁺ + OH⁻ → H₂O</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 5: 퀴즈 및 미지 농도 계산 -->
+        <section class="menu-section card quiz-card">
+          <h2 class="section-title">✏️ 미지 용액 농도 맞추기</h2>
+          <p class="quiz-info">실험을 진행하여 지시약의 색이 변하는 중화점(당량점)에 도달했을 때의 뷰렛 주입 부피를 측정하세요. 그 후 미지 용액의 농도를 계산하세요.</p>
+          
+          <div class="form-group">
+            <label for="guessInput">농도 계산 값 입력 (M)</label>
+            <div class="input-action-group">
+              <input type="number" id="guessInput" step="0.001" placeholder="예: 0.125" min="0">
+              <button id="checkGuessBtn" class="accent-btn">정답 확인</button>
+            </div>
+            <button id="showAnswerBtn" class="secondary-btn flex-center" style="margin-top: 8px; width: 100%;">
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              정답 및 풀이 보기
+            </button>
+          </div>
+          
+          <div id="quizResult" class="quiz-result hidden">
+            <!-- Results injected here -->
+          </div>
+        </section>
+      </div>
+    </aside>
+
+    <!-- FLOATING SIDEBAR OPEN TRIGGER (Visible only when sidebar is collapsed) -->
+    <button id="sidebarExpandBtn" class="expand-trigger-btn hidden" aria-label="메뉴 열기">
+      <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
+
+    <!-- RIGHT PANEL: Canvas & Visualizations -->
+    <main class="canvas-panel">
+      <!-- Title Overlay: Relocated below the graph on desktop -->
+      <div class="canvas-header-info">
+        <div class="dashboard-card" id="infoPills">
+          <div class="metric-card">
+            <span class="metric-label">현재 pH</span>
+            <span class="metric-value ph-val" id="pHDisplay">7.0</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">주입된 표준용액</span>
+            <span class="metric-value std-val" id="addedVolDisplay">0.0 mL</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">플라스크 총 부피</span>
+            <span class="metric-value flask-val" id="flaskVolDisplay">20.0 mL</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN SIMULATION AREA -->
+      <div class="canvas-viewport" id="canvasViewport">
+        <canvas id="simCanvas"></canvas>
+
+        <!-- CANVAS OVERLAYS -->
+        
+        <!-- Navigation Controls (Right-top) -->
+        <div class="overlay-panel nav-toolbar">
+          <!-- Fullscreen Graph Toggle -->
+          <button id="toggleGraphFullscreenBtn" class="tool-btn" title="그래프 전체보기 토글" style="width: auto; padding: 0 12px; display: flex; align-items: center; gap: 6px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon" style="width: 16px; height: 16px;">
+              <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+              <polyline points="16 7 22 7 22 13"></polyline>
+            </svg>
+            <span style="font-size: 11px; font-weight: 700; white-space: nowrap;">그래프 크게보기</span>
+          </button>
+          <div class="divider"></div>
+          
+          <!-- Graph Scale Option -->
+          <div class="scale-btn-group" title="그래프 크기 조절">
+            <button id="graphScale50" class="scale-btn">50%</button>
+            <button id="graphScale100" class="scale-btn active">100%</button>
+          </div>
+          <div class="divider"></div>
+          
+          <button id="zoomInBtn" class="tool-btn" title="확대">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              <line x1="11" y1="8" x2="11" y2="14"></line>
+              <line x1="8" y1="11" x2="14" y2="11"></line>
+            </svg>
+          </button>
+          <button id="zoomOutBtn" class="tool-btn" title="축소">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              <line x1="8" y1="11" x2="14" y2="11"></line>
+            </svg>
+          </button>
+          <button id="fitScreenBtn" class="tool-btn" title="화면 맞춤">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path>
+            </svg>
+          </button>
+          <div class="divider"></div>
+          <button id="modePanBtn" class="tool-btn active" title="이동 모드 (드래그로 화면 이동)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l-3 3-3-3M19 9l3 3-3 3M12 2v20M2 12h20"></path>
+            </svg>
+          </button>
+          <button id="modeDrawBtn" class="tool-btn" title="필기 모드 (화면에 판서)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Drawing Controls (Left-top: Visible only in Drawing mode) -->
+        <div class="overlay-panel draw-toolbar hidden" id="drawToolbar">
+          <!-- Color selection -->
+          <div class="tool-group">
+            <button class="color-btn active" data-color="#e11d48" style="background-color: #e11d48;"></button>
+            <button class="color-btn" data-color="#2563eb" style="background-color: #2563eb;"></button>
+            <button class="color-btn" data-color="#16a34a" style="background-color: #16a34a;"></button>
+            <button class="color-btn" data-color="#ca8a04" style="background-color: #ca8a04;"></button>
+            <button class="color-btn" data-color="#ffffff" id="drawColorDark" style="background-color: #ffffff;"></button>
+          </div>
+          <div class="divider"></div>
+          <!-- Thickness selection -->
+          <div class="tool-group flex-center">
+            <span class="tool-label">두께</span>
+            <input type="range" id="penThickness" min="2" max="15" step="1" value="4">
+          </div>
+          <div class="divider"></div>
+          <!-- Pen & Eraser & Clear -->
+          <div class="tool-group">
+            <button id="drawPenBtn" class="tool-btn active" title="펜">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+              </svg>
+            </button>
+            <button id="drawEraserBtn" class="tool-btn" title="지우개">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 20H7L3 16c-1.5-1.5-1.5-3.5 0-5l8.5-8.5c1.5-1.5 3.5-1.5 5 0l4 4c1.5 1.5 1.5 3.5 0 5L13 20"></path>
+                <line x1="12" y1="11" x2="20" y2="19"></line>
+              </svg>
+            </button>
+            <button id="drawClearAllBtn" class="tool-btn-danger" title="모두 지우기">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                <line x1="10" y1="11" x2="10" y2="17"></line>
+                <line x1="14" y1="11" x2="14" y2="17"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Floating Simulation Controls (Center-bottom: Visible only when sidebar is collapsed) -->
+        <div class="overlay-panel floating-sim-controls hidden" id="floatingSimControls">
+          <button id="floatPrevBtn" class="float-control-btn" title="이전 단계 (0.1 mL 되돌리기)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
+              <polygon points="19 20 9 12 19 4 19 20"></polygon>
+              <line x1="5" y1="19" x2="5" y2="5"></line>
+            </svg>
+          </button>
+          <button id="floatPlayBtn" class="float-control-btn" title="주입 시작/정지">
+            <svg id="floatPlayIcon" viewBox="0 0 24 24" fill="currentColor" class="btn-icon">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            <svg id="floatPauseIcon" viewBox="0 0 24 24" fill="currentColor" class="btn-icon hidden">
+              <rect x="6" y="4" width="4" height="16"></rect>
+              <rect x="14" y="4" width="4" height="16"></rect>
+            </svg>
+          </button>
+          <button id="floatNextBtn" class="float-control-btn" title="다음 단계 (1방울 주입)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
+              <polygon points="5 4 15 12 5 20 5 4"></polygon>
+              <line x1="19" y1="5" x2="19" y2="19"></line>
+            </svg>
+          </button>
+          <div class="divider"></div>
+          <button id="floatResetBtn" class="float-control-btn" title="초기화">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+              <polyline points="3 3 3 8 8 8"></polyline>
+            </svg>
+          </button>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
