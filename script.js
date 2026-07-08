@@ -1951,8 +1951,8 @@ function handleTouchStart(e) {
     const dy = t2.clientY - t1.clientY;
     touchStartDist = Math.sqrt(dx*dx + dy*dy) || 1;
     
-    touchStartMidX = (t1.clientX + t2.clientX) / 2;
-    touchStartMidY = (t1.clientY + t2.clientY) / 2;
+    touchStartMidX = ((t1.clientX + t2.clientX) / 2) - rect.left;
+    touchStartMidY = ((t1.clientY + t2.clientY) / 2) - rect.top;
     
     touchStartZoom = zoom;
     touchStartPanX = panX;
@@ -1991,8 +1991,8 @@ function handleTouchMove(e) {
     const dy = t2.clientY - t1.clientY;
     const dist = Math.sqrt(dx*dx + dy*dy) || 1;
     
-    const midX = (t1.clientX + t2.clientX) / 2;
-    const midY = (t1.clientY + t2.clientY) / 2;
+    const midX = ((t1.clientX + t2.clientX) / 2) - rect.left;
+    const midY = ((t1.clientY + t2.clientY) / 2) - rect.top;
     
     const factor = dist / touchStartDist;
     zoom = Math.max(0.4, Math.min(6.0, touchStartZoom * factor));
