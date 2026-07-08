@@ -1973,7 +1973,7 @@ function handleTouchMove(e) {
     
     if (isPanning && drawMode === 'pan') {
       panX = t.clientX - panStartX;
-      panY = t.clientY - panY;
+      panY = t.clientY - panStartY;
       draw();
     } else if (isDrawing && drawMode === 'draw') {
       if (activeTool === 'pen') {

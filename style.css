@@ -796,6 +796,7 @@ body.dark-mode .metric-card:hover {
   height: 100%;
   position: relative;
   background: radial-gradient(circle at 50% 50%, var(--bg-app) 0%, var(--border-color) 120%);
+  touch-action: none; /* iOS/iPad에서 뷰포트 내부 드래그 시 브라우저 스크롤/바운스 방지 */
 }
 
 #simCanvas {
