@@ -273,10 +273,12 @@ window.addEventListener('DOMContentLoaded', () => {
       toggleGraphFullscreenBtn.classList.add('active');
       toggleGraphFullscreenBtn.querySelector('span').textContent = '실험장치 보기';
       dashboard.classList.add('fullscreen-graph-mode');
+      appContainer.classList.add('graph-fullscreen-active');
     } else {
       toggleGraphFullscreenBtn.classList.remove('active');
       toggleGraphFullscreenBtn.querySelector('span').textContent = '그래프 크게보기';
       dashboard.classList.remove('fullscreen-graph-mode');
+      appContainer.classList.remove('graph-fullscreen-active');
     }
     
     draw();

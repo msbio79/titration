@@ -1035,6 +1035,17 @@ body.dark-mode .scale-btn-group {
   box-shadow: inset var(--shadow-sm);
 }
 
+/* --- Layout Overlap Fixes --- */
+/* 사이드바 접혔을 때 드로잉 툴바를 확장 버튼(메뉴열기) 오른쪽으로 밀어줌 (겹침 방지) */
+.app-container.sidebar-collapsed .draw-toolbar {
+  left: 80px;
+}
+
+/* 그래프 크게보기 활성화 상태에서 하단 플로팅 시뮬레이션 제어 버튼을 위로 띄움 (정보 대시보드와 겹침 방지) */
+.graph-fullscreen-active .floating-sim-controls {
+  bottom: 120px; /* 기존 25px에서 대시보드 높이만큼 올림 */
+}
+
 /* --- Mobile Responsiveness --- */
 @media (max-width: 1024px) {
   :root {
@@ -1116,5 +1127,13 @@ body.dark-mode .scale-btn-group {
   
   .pill strong {
     font-size: 0.9rem;
+  }
+
+  /* 모바일 뷰에서는 드로잉 툴바 가로 위치를 원래대로 두고, 그래프 크게보기 시 플로팅 버튼도 기존 하단 위치 유지 */
+  .app-container.sidebar-collapsed .draw-toolbar {
+    left: 15px;
+  }
+  .graph-fullscreen-active .floating-sim-controls {
+    bottom: 25px; /* 모바일은 대시보드가 상단에 위치하므로 제어 버튼은 아래에 그대로 둠 */
   }
 }
